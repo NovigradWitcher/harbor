@@ -78,6 +78,7 @@ class AndroidWorkProfileController(
         if (!isOwner()) return@withContext PolicyResult.Failure("Harbor is not the profile owner")
         runCatching {
             policyManager.clearUserRestriction(admin, UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES)
+            policyManager.clearUserRestriction(admin, UserManager.DISALLOW_DEBUGGING_FEATURES)
         }.fold(
             onSuccess = { PolicyResult.Success(Unit) },
             onFailure = { PolicyResult.Failure(it.message ?: it.javaClass.simpleName) },
