@@ -29,6 +29,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.withContext
 import rikka.shizuku.Shizuku
 import kotlin.coroutines.resume
+import rikka.shizuku.ShizukuProvider
 
 class ShizukuPrivilegedBackend(
     private val context: Context,
@@ -272,8 +273,8 @@ class ShizukuPrivilegedBackend(
     private fun snapshot(permissionDenied: Boolean = false): PrivilegedBackendState = runCatching {
         if (!Shizuku.pingBinder()) {
             val installed = runCatching {
-                context.packageManager.getApplicationInfo(SHIZUKU_PACKAGE, 0)
-            }.isSuccess
+                context.packageManager.getPermissionInfo(ShizukuProvider.PERMISSION, 0)
+            }.getOrNull() != null
             return@runCatching PrivilegedBackendState(
                 if (installed) PrivilegedAvailability.BINDER_UNAVAILABLE else PrivilegedAvailability.NOT_INSTALLED,
                 detail = if (installed) "Start Shizuku to use Advanced tools" else "Shizuku is not installed",
@@ -348,7 +349,6 @@ class ShizukuPrivilegedBackend(
     private fun Throwable.safeMessage(): String = message ?: javaClass.simpleName
 
     private companion object {
-        const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"
         const val PERMISSION_REQUEST_CODE = 0x4842
         const val PERMISSION_RESULT_TIMEOUT_MILLIS = 30_000L
         const val SERVICE_BIND_TIMEOUT_MILLIS = 15_000L
