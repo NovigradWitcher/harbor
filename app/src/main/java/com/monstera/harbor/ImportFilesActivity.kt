@@ -180,7 +180,7 @@ internal class SharedFileImporter(private val resolver: ContentResolver) {
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
             put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-            put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/Harbor")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}")
             put(MediaStore.MediaColumns.IS_PENDING, 1)
         }
         val destination = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
@@ -216,7 +216,7 @@ internal class SharedFileImporter(private val resolver: ContentResolver) {
             .trim()
             .take(MAX_NAME_LENGTH)
             .ifBlank { "shared-file-${index + 1}" }
-        return "Harbor-${System.currentTimeMillis()}-$safe"
+        return safe
     }
 
     private fun sharedUris(intent: Intent): List<Uri> {
